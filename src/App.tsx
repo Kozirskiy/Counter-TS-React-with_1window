@@ -98,7 +98,7 @@ function App() {
                 <NumberFieldStyled maxValue={valueNumberMax} counter={counter}>
                     <ValueBoxField>
                         <DataBox>
-                            <TextField>max value:</TextField>
+                            <TextField>Max value:</TextField>
                             <Input value={valueNumberMax}
                                    onChange={(e) => {
                                        setValueNumberMax(Number(e.currentTarget.value))
@@ -118,7 +118,7 @@ function App() {
                         </DataBox>
 
                         <DataBox>
-                            <TextField>start value:</TextField>
+                            <TextField>Start value:</TextField>
                             <Input value={valueNumberStart}
                                    onChange={(e) => {
                                        setValueNumberStart(Number(e.currentTarget.value));
