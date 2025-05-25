@@ -19,6 +19,7 @@ function App() {
     const [hasChangeAfterError, setHasChangeAfterError] = useState(false);
     const [wasErrorBefore, setWasErrorBefore] = useState(false);
 
+    const [showSettings, setShowSettings] = useState(true);
 
     useEffect(() => {
         const isStartInvalid = valueNumberStart < 0 || valueNumberStart >= valueNumberMax;
@@ -45,6 +46,7 @@ function App() {
         setCounter(valueNumberStart);
         setHasChangeAfterError(false);
         setWasErrorBefore(false);
+        setShowSettings(!showSettings);
     }
 
     useEffect(() => {
@@ -62,7 +64,6 @@ function App() {
 
     useEffect(() => {
         const valueAsString = localStorage.getItem('counterValue')
-        console.log(localStorage.getItem('counterValue'))
         if (valueAsString) {
             const newValue = JSON.parse(valueAsString)
             setCounter(newValue)
@@ -73,13 +74,11 @@ function App() {
         localStorage.setItem('counterValue', JSON.stringify(counter))
     }, [counter])
 
-    //increment
     const incrementCounterHandler = () => {
         const newCount: number = counter + 1
         setCounter(newCount)
     }
 
-    // delete counter
     const deleteIncrementCounterHandler = () => {
         setCounter(0)
     }
@@ -88,109 +87,134 @@ function App() {
         <MainStyled>
 
             <MainBoxStyled>
-                <NumberFieldStyled counter={counter} maxValue={valueNumberMax}>
-                    {error ? (
-                        <ErrorText>{error}</ErrorText>
-                    ) : wasErrorBefore && hasChangeAfterError ? (
-                        <InfoText>enter value and press 'set'</InfoText>
-                    ) : (counter)}
-                </NumberFieldStyled>
-                <NumberFieldStyled maxValue={valueNumberMax} counter={counter}>
-                    <ValueBoxField>
-                        <DataBox>
-                            <TextField>Max value:</TextField>
-                            <Input value={valueNumberMax}
-                                   onChange={(e) => {
-                                       setValueNumberMax(Number(e.currentTarget.value))
-                                       setHasChangeAfterError(true)
-                                   }}
-                                   style={{
-                                       width: '100px',
-                                       height: '40px',
-                                       backgroundColor: errorStart ? 'salmon' : 'white',
-                                       border: errorMax ? '2px solid red' : 'none',
-                                       borderRadius: '5px',
-                                       color: 'black',
-                                       fontSize: '20px',
-                                       fontWeight: 'bold',
-                                       textAlign: 'center'
-                                   }}/>
-                        </DataBox>
+                {showSettings ? (
+                    <div id="setting_window">
+                        <NumberFieldStyled maxValue={valueNumberMax} counter={counter}>
+                            <ValueBoxField>
+                                <DataBox>
+                                    <TextField>Max value:</TextField>
+                                    <Input value={valueNumberMax}
+                                           onChange={(e) => {
+                                               const rawValue = e.currentTarget.value;
+                                               const cleaned = rawValue.replace(/^0+(?!$)/, '');
+                                               setValueNumberMax(Number(cleaned));
+                                               setHasChangeAfterError(true);
+                                           }}
+                                           style={{
+                                               width: '70px',
+                                               height: '25px',
+                                               backgroundColor: errorStart ? 'salmon' : 'white',
+                                               border: errorMax ? '2px solid red' : 'none',
+                                               borderRadius: '5px',
+                                               color: 'black',
+                                               fontSize: '20px',
+                                               fontWeight: 'bold',
+                                               textAlign: 'center'
+                                           }}/>
+                                </DataBox>
 
-                        <DataBox>
-                            <TextField>Start value:</TextField>
-                            <Input value={valueNumberStart}
-                                   onChange={(e) => {
-                                       setValueNumberStart(Number(e.currentTarget.value));
-                                       setHasChangeAfterError(true)
-                                   }}
-                                   style={{
-                                       width: '100px',
-                                       height: '40px',
-                                       backgroundColor: errorStart ? 'salmon' : 'white',
-                                       border: errorStart ? '2px solid red' : 'none',
-                                       borderRadius: '5px',
-                                       color: 'black',
-                                       fontSize: '20px',
-                                       fontWeight: 'bold',
-                                       textAlign: 'center'
-                                   }}/>
-                        </DataBox>
+                                <DataBox>
+                                    <TextField>Start value:</TextField>
+                                    <Input value={valueNumberStart}
+                                           onChange={(e) => {
+                                               const rawValue = e.currentTarget.value;
+                                               const cleaned = rawValue.replace(/^0+(?!$)/, '');
+                                               setValueNumberStart(Number(cleaned));
+                                               setHasChangeAfterError(true);
+                                           }}
+                                           style={{
+                                               width: '70px',
+                                               height: '25px',
+                                               backgroundColor: errorStart ? 'salmon' : 'white',
+                                               border: errorStart ? '2px solid red' : 'none',
+                                               borderRadius: '5px',
+                                               color: 'black',
+                                               fontSize: '20px',
+                                               fontWeight: 'bold',
+                                               textAlign: 'center'
+                                           }}/>
+                                </DataBox>
 
-                    </ValueBoxField>
+                            </ValueBoxField>
 
-                </NumberFieldStyled>
+                        </NumberFieldStyled>
 
-                <ButtonFieldStyled>
-                    <Button onClick={incrementCounterHandler}
-                            title={'inc'}
-                            disabledButton={counter >= valueNumberMax}
-                            className={counter >= valueNumberMax ? 'disabled-style' : ''}
-                            style={{
-                                color: '#292C35',
-                                backgroundColor: '#63DBFD',
-                                fontSize: '35px',
-                                padding: '5px',
-                                width: '150px',
-                                cursor: counter >= valueNumberMax ? 'not-allowed' : 'pointer',
-                                opacity: counter >= valueNumberMax ? 0.5 : 1
-                            }}/>
-                    <Button
-                        onClick={deleteIncrementCounterHandler}
-                        title={'reset'}
-                        disabledButton={counter == 0}
-                        className={counter == 0 ? 'disabled-style' : ''}
-                        style={{
-                            color: '#292C35',
-                            backgroundColor: '#63DBFD',
-                            fontSize: '35px',
-                            padding: '5px',
-                            width: '150px',
-                            cursor: counter == 0 ? 'not-allowed' : 'pointer',
-                            opacity: counter == 0 ? 0.5 : 1
-                        }}/>
-                    <Button
-                        title={'set'}
-                        onClick={setStartValueHandler}
-                        disabledButton={!!error}
-                        style={{
-                            color: '#292C35',
-                            backgroundColor: error ? '#ccc' : '#63DBFD',
-                            fontSize: '35px',
-                            padding: '5px',
-                            width: '150px',
-                            cursor: error ? 'not-allowed' : 'pointer',
-                            opacity: error ? 0.5 : 1
-                        }}
-                    />
-                </ButtonFieldStyled>
+                        <ButtonFieldStyled>
+                            <Button
+                                title={'set'}
+                                onClick={setStartValueHandler}
+                                disabledButton={!!error}
+                                style={{
+                                    color: '#292C35',
+                                    backgroundColor: error ? '#ccc' : '#63DBFD',
+                                    fontSize: '35px',
+                                    padding: '5px',
+                                    width: '150px',
+                                    cursor: error ? 'not-allowed' : 'pointer',
+                                    opacity: error ? 0.5 : 1
+                                }}
+                            />
+                        </ButtonFieldStyled>
+                    </div>
+                ) : (
+                    <div id="counter_window">
+                        <NumberFieldStyled counter={counter} maxValue={valueNumberMax}>
+                            {error ? (
+                                <ErrorText>{error}</ErrorText>
+                            ) : wasErrorBefore && hasChangeAfterError ? (
+                                <InfoText>enter value and press 'set'</InfoText>
+                            ) : (counter)}
+                        </NumberFieldStyled>
+
+                        <ButtonFieldStyled>
+                            <Button onClick={incrementCounterHandler}
+                                    title={'inc'}
+                                    disabledButton={counter >= valueNumberMax}
+                                    className={counter >= valueNumberMax ? 'disabled-style' : ''}
+                                    style={{
+                                        color: '#292C35',
+                                        backgroundColor: '#63DBFD',
+                                        fontSize: '35px',
+                                        padding: '5px',
+                                        width: '150px',
+                                        cursor: counter >= valueNumberMax ? 'not-allowed' : 'pointer',
+                                        opacity: counter >= valueNumberMax ? 0.5 : 1
+                                    }}/>
+                            <Button
+                                onClick={deleteIncrementCounterHandler}
+                                title={'reset'}
+                                disabledButton={counter == 0}
+                                className={counter == 0 ? 'disabled-style' : ''}
+                                style={{
+                                    color: '#292C35',
+                                    backgroundColor: '#63DBFD',
+                                    fontSize: '35px',
+                                    padding: '5px',
+                                    width: '150px',
+                                    cursor: counter == 0 ? 'not-allowed' : 'pointer',
+                                    opacity: counter == 0 ? 0.5 : 1
+                                }}/>
+                            <Button
+                                title={'set'}
+                                onClick={() => setShowSettings(true)}
+                                style={{
+                                    color: '#292C35',
+                                    backgroundColor: '#63DBFD',
+                                    fontSize: '35px',
+                                    padding: '5px',
+                                    width: '150px'
+                                }}
+                            />
+                        </ButtonFieldStyled>
+                    </div>
+                )}
             </MainBoxStyled>
         </MainStyled>
     )
 }
 
 const InfoText = styled.p`
-    color: black; 
+    color: black;
     font-size: 25px;
     margin: auto;
     text-align: center;
@@ -209,6 +233,19 @@ const MainStyled = styled.main`
     height: 100%;
     display: flex;
     gap: 50px;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+
+    @media (max-width: 900px) {
+        gap: 30px;
+        padding: 20px;
+        flex-direction: column;
+    }
+
+    @media (max-width: 600px) {
+        gap: 20px;
+    }
 `
 const MainBoxStyled = styled.div`
     background: none;
@@ -218,6 +255,17 @@ const MainBoxStyled = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    width: 500px;
+
+    @media (max-width: 900px) {
+        width: 90%;
+    }
+
+    @media (max-width: 600px) {
+        width: 100%;
+        padding: 10px;
+    }
 
 `
 type NumberFieldStyledTypeProps = {
@@ -229,44 +277,72 @@ type NumberFieldStyledTypeProps = {
 const NumberFieldStyled = styled.div<NumberFieldStyledTypeProps>`
     color: ${(props) => props.counter >= props.maxValue ? 'red' : '#292C35'};
     background-color: #63DBFD;
-    width: 350px;
+    width: 100%;
     height: 200px;
     border-radius: 15px;
     margin-bottom: 30px;
     font-size: 70px;
     font-weight: bold;
-
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
+
+    @media (max-width: 900px) {
+        height: 150px;
+        font-size: 50px;
+    }
+
+    @media (max-width: 600px) {
+        height: 200px;
+        font-size: 40px;
+    }
 `
 
 const ButtonFieldStyled = styled.div`
     border: 3px solid #63DBFD;
     border-radius: 15px;
     padding: 15px;
-    display: flex; /* додаємо Flexbox */
-    justify-content: center; /* центрує по горизонталі */
-    gap: 20px; /* відступ між кнопками */
+    display: flex;
+    justify-content: center;
+    gap: 10px;
     flex-wrap: wrap;
+
+    @media (max-width: 600px) {
+        padding: 10px;
+        gap: 5px;
+    }
 `
 
 
 const ValueBoxField = styled.div`
+    padding: 0 20px;
     display: flex;
     flex-direction: column;
     align-content: center;
+    
+    @media (max-width: 600px) {
+        padding: 0 10px;
+    }
 `
 const DataBox = styled.div`
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
+
+    @media (max-width: 600px) {
+        align-items: center;
+        align-content: center;
+    }
 `
 const TextField = styled.p`
     color: #1a1a1a;
     font-size: 25px;
-    margin-right: 30px;
+    margin-right: 10px;
+
+    @media (max-width: 600px) {
+        font-size: 18px;
+    }
 `
 
 export default App

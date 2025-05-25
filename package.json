@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://Kozirskiy.github.io/Counter-TS-React",
+  "homepage": "https://Kozirskiy.github.io/Counter-TS-React-with_1window",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
