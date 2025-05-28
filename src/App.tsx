@@ -60,8 +60,7 @@ function App() {
             setValueNumberMax(max);
         }
     }, []);
-
-
+    
     useEffect(() => {
         const valueAsString = localStorage.getItem('counterValue')
         if (valueAsString) {
@@ -320,7 +319,7 @@ const ValueBoxField = styled.div`
     display: flex;
     flex-direction: column;
     align-content: center;
-    
+
     @media (max-width: 600px) {
         padding: 0 10px;
     }

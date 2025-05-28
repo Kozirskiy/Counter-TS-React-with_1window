@@ -3,6 +3,6 @@ import react from '@vitejs/plugin-react'
 
 
 export default defineConfig({
-  base: '/Counter-TS-React/',
   plugins: [react()],
+  base: '/Counter-TS-React-with_1window/',
 })
